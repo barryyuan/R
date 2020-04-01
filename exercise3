@@ -1,0 +1,126 @@
+        
+
+
+1. The data file Real-Estate.txt contains information on the homes sold in the Denver area during the year 2003.  The variables in this data file are as follows: 
+     
+Price	Selling price in $1000
+Bedrooms	Number of bedrooms
+Size	Size of the home in square feet
+Pool	Swimming Pool (1=yes, 0=no)
+Distance	Distance from the home to the center of the city
+Township	Township No.
+Garage	Garage attached (1=yes, 0=no)
+Baths	Number of bathrooms
+
+Download data Real_Estate.txt from Ispace.
+
+a)	Give a plot of selling price against distance from the home to the center of the city. Does there seem to be a relationship between the two variables? If so, is the relationship direct or inverse?   
+Ans:
+Estate=read.table(file.choose(),header=T)
+attach(Estate)
+plot(Price,Distance,pch=20)
+ 
+There seems to be a relationship between two variables in the above graph. The relationship is in inverse.
+
+b)	Plot a histogram for selling price. Comment on the shape of the distribution.
+hist(Price,col="light blue",main="Histogram of Selling Price")
+
+
+ 
+The shape of the distribution of the price is right skewed. 
+
+c)	Create side-by-side box plots to compare the distributions of selling price for homes with an attached garage and homes without a garage. Comment on what you observe.
+boxplot(Price~Garage,col="light blue",xlab="Garage attached (1=yes, 0=no)",ylab="Price",main="Selling Price")
+ 
+Garage takes value of 0 when the garage is not attached and 1 when the garage is attached. Form the two box plots, we see, obviously, the median of selling price for the houses with garage is higher than that of houses without garage. And, the variation of selling price for the houses with garage is also larger than that of houses without garage. 
+d)	There are five Townships in this data. Draw a bar plot to compare the number of homes sold in these Townships. 
+township = summary(as.factor(d$Township))  #or township=table(Township)
+barplot(township,beside=TRUE,legend.text=TRUE,col=1:5,xlab="Townships",ylab="Frequency",main="A barplot of Townships")
+ 
+
+e)	Draw a pie chart of the variable “Baths” and label the percentage of each number of Bathrooms.
+bath=summary(as.factor(d$Baths))   #or bath=table(Baths)
+percentage =paste(names(bath),"=",round(bath/sum(bath)*100,2),"%")
+pie(bath,percentage,main="Pie chart of number of Bathrooms",col=5:8)
+ 
+2. Recently, it has been proposed that there is a non-linear relation between the number of people N in a city, and its economic output per person Y (per capita \gross metropolitan product"):
+ 
+Use data from the 366 metropolitan area of the US (as of 2006) to estimate a, by minimizing the mean squared error,
+ 
+
+
+over all a. We will see later in the class how we could estimate both parameters at once, but for now we'll treat y0 as known, and in particular equal to $6611.
+
+a)	Using the read.table command, load the gmp.dat (on Ispace) into a data frame called gmp. 
+gmp1=read.table(file.choose(),header=T)
+gmp=data.frame(gmp1)
+
+b)	The last two columns give, for each city, the total gross metropolitan product (YN ) and the per-capita metropolitan product (Y ). Use this to make a vector which has the population (N) for each city. 
+n=gmp[,2]/gmp[,3]
+
+c)	Add the vector of populations to the gmp data frame as a new column, named pop.
+gmp=data.frame(gmp,pop=n)
+
+d)	Calculate the mean squared error (MSE) of the power-law model, when y0 = 6611 (in dollars) and a=0.15. 
+ a=0.15
+y0=6611
+attach(gmp)
+>mse= (t(pcgmp-y0*(pop^0.15))%*%(pcgmp-y0*(pop^0.15)))/366
+          [,1]
+[1,] 207057513
+
+e)	Make a sequence of values of a, from 0.10 to 0.15, in steps of 0.005. Calculate the MSE for each value of a in that sequence, and store all the MSEs in a vector. 
+a=seq(0.1,0.15,by=0.005)
+Mse=rep(0,length(a))
+for (i in 1:length(a))
+Mse[i]=t(pcgmp-6611*(pop^a[i]))%*%(pcgmp-6611*(pop^a[i]))/366
+Mse
+ > Mse
+ [1] 154701953 126695278 102322975  82608432  68755655  62177661  64529167
+ [8]  77744223 104079528 146164274 207057513
+
+f) Plot the square roots of the MSEs vs. a. What are the units of the root mean squared error? What value of a, among those you looked at, leads to the least squared error? 
+RMSE=sqrt(Mse)
+plot(RMSE~a,col = "red",pch=16)
+RMSE
+ [1] 12437.924 11255.900 10115.482  9088.918  8291.903  7885.281  8033.005
+ [8]  8817.268 10201.937 12089.842 14389.493
+ 
+Form the graph, we can see that the smallest squared error is obtained at a = 0.125. 
+
+ 3. Use R to answer the following questions:
+ (a) For normal distribution N(0, 1), find a number z* such that p(−z* < Z < z*) =   
+    0.05.
+qnorm(0.5+0.05/2)
+[1] 0.06270678
+
+ (b) How much area (probability) is to the right of 1.5 for a normal distribution 
+    N(0, 2)?
+1-pnorm(1.5,0,sqrt(2))
+[1] 0.1444222
+
+4. Calculate the probability for each of the following events:                                   
+a. A normally distributed variable with mean 35 and standard deviation 6 is larger than 42. 
+1-pnorm(42,35,6)
+[1] 0.1216725
+
+
+b. Getting 7 out of 10 successes in a binomial distribution with probability 0.8. 
+> dbinom(7,10,0.8)
+0.2013266
+
+5. Three fair dice are rolled, and all outcomes are equally likely. Write a simulation program using R to estimate the probability that the sum of all the numbers on the dice is at least 10. 
+Solution: 
+n=10000
+outcome=matrix(0,nrow=n,ncol=3)
+for (i in 1:n)
+{outcome[i,]= sample(1:6,3,replace=T)}
+sum1=apply(outcome,1,sum)
+prob1=sum(sum1>=10)/n
+
+6.The file Esti.txt in Ispace contains a set of data which consists of 3000 observations. 
+(1) Make a histogram for the data. Which distribution would be a plausible model?
+(2) Suppose that the exponential distribution would be used to fit the data. Use R to fit the parameters by the method of moments and maximum likelihood. 
+(3) Suppose that the gamma distribution is also used to fit the data. Use R to fit the parameters by the method of moments.
+(4) Compare the two estimates obtained by (2) and (3). Which estimation is better?  
+
