@@ -1,0 +1,153 @@
+
+
+	The data file Real-Estate.txt contains information on the homes sold in the Denver area during the year 2003.  The variables in this data file are as follows: 
+
+     
+Price	Selling price in $1000
+Bedrooms	Number of bedrooms
+Size	Size of the home in square feet
+Pool	Swimming Pool (1=yes, 0=no)
+Distance	Distance from the home to the center of the city
+Township	Township No.
+Garage	Garage attached (1=yes, 0=no)
+Baths	Number of bathrooms
+Use R to:
+	Develop a 95 percent confidence interval for the mean selling price of the homes.
+
+estate <- read.table("Real-Estate.txt", header = T)
+
+t.test(estate$Price)
+	Develop a 98 percent confidence interval for the mean distance the home is from the center of the city.
+
+t.test(estate$Price, conf.level = 0.98)
+
+	Develop a 90 percent confidence interval for the proportion of homes with an attached garage. 
+
+prop.test(71, 105, conf <- 0.90)
+
+	Conduct a test of hypothesis to determine if the mean selling price of homes with an attached garage and swimming pool is greater than $200,000. Use the 0.05 significance level. Specify your conclusion.
+
+PPG <- estate$Price[estate$Pool == 1 & estate$Garage == 1]
+t.test(PPG, mu = 200)
+          
+	Conduct a test of hypothesis which determines if the variability of the selling prices of homes with a swimming pool less than those of homes without a swimming pool. Use the 0.02 significance level.
+
+home_with_pool <- estate$Price[estate$Pool == 1]
+home_without_pool <- estate$Price[estate$Pool == 0]
+home_with_pool_less <- home_with_pool[home_with_pool < home_without_pool]
+
+	Conduct a test of hypothesis which concludes that there is a difference in the mean selling price of homes with a pool and homes without a pool. At the 0.05 significance level.  
+
+home_less_median <- estate$Price[estate$Price < median(estate$Price)]
+home_large_median <- estate$Price[estate$Price >= median(estate$Price)]
+var.test(home_less_median, home_large_median)$p.value
+
+	Find the median selling price of the homes. Divide the homes into two groups, those that sold for more than (or equal to) the median price and those that sold for less. Is there a difference in the proportion of homes with a pool for those that sold at or above the median price versus those that sold for less than the median price? Use 0.05 significant level. 
+
+
+	conduct a test of hypothesis to determine if there is a difference in the mean selling price of homes among the five townships. Use the 0.05 significance level.
+
+
+	The following is sample information. Use R to test the hypothesis at the 0.05 significance level that the treatment means are equal and answer the following questions.  
+   
+Treatment1	Treatment2	Treatment3
+9	13	10
+7	20	9
+11	14	15
+9	13	14
+12	-	15
+10	-	-
+	State the null hypothesis and the alternate hypothesis.
+	Give the value of SST, SSW and SSG. 
+	Generate an ANOVA table.
+	State your decision regarding the null hypothesis. 
+	If the null hypothesis is rejected, can we conclude that treatment 2 and treatment 3 differ? Use the 0.05 significance level. 
+
+treatment1 <- c(9, 7,11,9,12,10)
+treatment2 <- c(13,20,14,13)
+treatment3 <- c(10,9,15,14,15)
+
+mean_total <- (sum(treatment1) + sum(treatment2) + sum(treatment3)) / (length(treatment1) + length(treatment2) + length(treatment3))
+
+SST <- sum(sum((treatment1 - mean_total)^2) + sum((treatment2 - mean_total)^2) + sum((treatment3 - mean_total)^2))
+
+SSW_treatment1 <- sum((treatment1 - mean(treatment1))^2)
+
+SSW_treatment2 <- sum((treatment2 - mean(treatment2))^2)
+
+SSW_treatment3 <- sum((treatment3 - mean(treatment3))^2)
+
+SSW_total <- SSW_treatment1 + SSW_treatment2 + SSW_treatment3
+
+SSG <- length(treatment1) * (mean(treatment1) - mean_total)^2 + length(treatment2) * (mean(treatment2) - mean_total)^2 + length(treatment3) * (mean(treatment3) - mean_total)^2
+
+
+
+	A psychologist is working with three types of aptitude tests that may be given to prospective management trainees. In deciding how to structure the testing process, an important issue is the possibility of interaction between test takers and test type. If there was no interaction, only one type of test would be needed. Three tests of each type are given to members of each of four groups of subject type. These were distinguished by rating of poor, fair, good, and excellent in preliminary interview. The scores obtained are listed in the following table. 
+ 
+
+	Draw the interaction plot for the score by subject type and by test type.
+	Set up the analysis of variance table
+	Test the null hypothesis of on interaction between subject type and test type.  
+
+
+score<-c(65,68,62,69,71,67,75,75,78,74,79,76,72,69,69,70, 69, 65,64 ,72, 65,68,73,75,78, 82, 80,83, 82, 84,78, 78, 75,76, 77, 75)
+
+psych_test <- data.frame(score<-c(65,68,62,69,71,67,75,75,78,74,79,76,72,69,69,70, 69, 65,64 ,72, 65,68,73,75,78, 82, 80,83, 82, 84,78, 78, 75,76, 77, 75), test <- gl(3, 12, 36, labels = c("Profile Fit", "Mindbender", "Psych Out")), subject <- gl(4, 3, 36, labels = c("A", "B", "C", "D"))) 
+
+op <- par(mfrow = c(1, 2))
+plot(score ~ test + subject, data = psych_test) 
+ 
+bartlett.test(score ~ test, data = psych_test) ## ## Bartlett test of homogeneity of variances ## ## data: time by toxicant 
+## 
+##  Bartlett test of homogeneity of variances
+## 
+## data:  score by test
+## Bartlett's K-squared = 3.864, df = 2, p-value = 0.1449
+bartlett.test(score ~ subject, data = psych_test) 
+## 
+##  Bartlett test of homogeneity of variances
+## 
+## data:  score by subject
+## Bartlett's K-squared = 5.9082, df = 3, p-value = 0.1162
+rats.aov <- aov(score ~ test * subject, data = psych_test) 
+
+
+	Refer to the data Real_Estate.txt. Use the selling price of the home as the dependent variable and determine the regression equation with number of bedrooms, size of the house, whether there is a pool, whether there is an attached garage, distance from the home to the center of the city, and the number of bathrooms as independent variables. 
+
+	Write out the regression equation. Interpret the coefficient on the distance from the home to the center of the city, the coefficient on size of house, the coefficient on garage and pool.                                                                                                    
+	Develop a correlation matrix. Which independent variable has the strongest correlation with the dependent variable? 
+	Find and interpret the value of and   R_adj^2 .                                                                              
+	Explain if the coefficient on number of bathrooms in this regression, at the 5% level, is significant. What variables are not significant in this regression model?
+	Explain if the regression model is significant according to F-test result? 
+	Complete the following ANOVA table.
+
+Source	Sum of Squares (SS)	df	Mean Squares (MS)	F-ratio	P value
+Regression					
+Error			
+Total		
+
+What conclusions do you draw from this table? 
+
+	Consider the following three linear models:
+Model1: 
+Price~Bedrooms+Size+Pool+Distance+Township+Garage+Baths+Bedrooms:Size+Bedrooms:Pool+Bedrooms:Distance+Bedrooms:Township+Bedrooms:Garage+Bedrooms:Baths+Size:Pool+Size:Distance+Size:Township+Size:Garage+Size:Baths+Pool:Distance+Pool:Township+Pool:Garage+Pool:Baths+Distance:Township+Distance:Garage+Distance:Baths+Township:Garage+Township:Baths
+
+Model2: 
+Price~Bedrooms+Size+Pool+Distance+Township+Garage+Baths+Bedrooms:Size+Bedrooms:Township+Pool:Garage+Distance:Township+Distance:Garage + Distance:Baths + Garage:Baths
+
+Model 3: 
+Price~Bedrooms+Size+Pool+Garage+Baths
+
+Find  R2, R_adj^2 , Cp, PRESS and s2 for the above three models, respectively.  Select the ‘best’ model based on these criteria.   
+
+
+
+real.Estate <- read.table("Real-Estate.txt", header = T)
+names(real.Estate)
+## [1] "Price"    "Bedrooms" "Size"     "Pool"     "Distance" "Township"
+## [7] "Garage"   "Baths"
+attach(real.Estate)
+pri.dis.size.gar <- pri.dis.size.gar <- lm(Price ~ Distance + Size + Garage, data = real.Estate)
+summary(pri.dis.size.gar)
+
