@@ -1,0 +1,329 @@
+Assignment 2 (Deadline: Oct. 7)
+1.	Simulate a trail which rolls a “die” 100 times. How many times do you see “5”?
+
+
+> time <- seq(1:100)
+> 
+> number_time <- c(sample(1:6,100,replacement = T))
+> 
+> j <- 1
+> 
+> for (i in 1:100){
++ 
++   if (data.frame(time,number_time)$number[i] == 5){
++ 
++     j = j + 1
++ 
++   }
++ 
++ }
+> 
+> print(paste("There are",j,"'5' in the trail."))
+[1] "There are 1 '5' in the trail."
+2. The data file “country.txt” contains numerous population indicators for a sample of 121 countries. Read the data file into R and answer the following questions. (Download the data from Ispace.)
+a. How many variables are included in the dataset? How many countries are involved in this survey? 
+> country <- read.table("country.txt")
+> length(country)
+[1] 5
+> 
+> 
+> length(country$V1)
+[1] 122
+b. What is the percentage of developing country in this data? 
+> developing_percentage <- length(country$V5[country$V5 == "developing"]) / length(country$V5[-1])
+> 
+> developing_percentage
+[1] 0.768595
+c. What is the mean of the variable GDP? What is the mean of GDP for developing country?  What is the mean of GDP for developed country?
+> V2<-as.matrix(country$V2)
+> mean(as.numeric(V2[-1]))
+[1] 4151.975
+
+d. What is the standard deviation of the variable death rate? 
+> V4 <- as.matrix(country$V4)
+> sd(as.numeric(V4[-1]))
+[1] 4.656611
+e. What is the range of GDP? 
+> V2<-as.matrix(country$V2)
+> print(paste("The range of GDP is (",min(as.numeric(V2[-1])),",",max(as.numeric(V2[-1])),")"))
+[1] "The range of GDP is ( 120 , 22470 )"
+f. What is the mean of birthrate for all the developing country whose GDP is greater than 1500.   
+> V2 <- as.matrix(country$V2)
+> 
+> V3 <- as.matrix(country$V3)
+
+3. Write some lines of code that will figure out how many terms in the sum 1+2+3+... it requires for the sum to exceed one million. 
+
+> i<-0
+> sum<-0
+> repeat
++ {i=i+1
++ sum=sum+1
++ if(sum>=1000000){break}}
+> print(i)
+[1] 1e+06
+
+4. Write a program to calculate the sum 1+2+3+...+300.  Display the total after every 20 terms by using ‘if’ statement to check if the current number of terms is a multiple of 20.
+> for(i in 0:299){
++ i=i+1
++ sum=sum+i
++ if(i%%20==0){
++ if(i%%20==0){
++ }else if(i%%20!=0){
++ print(i)
++ }}}
+> i
+[1] 300
+
+5. The game "3X+1" goes like this.  If N is odd, multiply it by 3 and add 1.  If N is even, divide it by 2.  Repeat until N equals 1, if ever.  Every value of N that anyone has ever checked eventually leads to 1, but it is an open mathematical problem (known as the Collatz conjecture) whether EVERY value of N eventually leads to 1
+
+> collatz <- function(n, acc=c()) {
++  if(n==1) return(c(acc, 1))
++ collatz(ifelse(n%%2==0, n/2, 3*n +1), c(acc, n))}
+6. Write a program ThreeX that, given an input value of N, will play the game "3X+1" and print to the screen the values visited along the way.  The program also needs to return the maximum value hit and the number of steps taken.  
+> collatz <- function(n, acc=c()) {
++ 
++   if(n==1) return(c(acc, 1));
++ 
++   collatz(ifelse(n%%2==0, n/2, 3*n +1), c(acc, n))} 
+7. Write a function to compute running medians. Running medians is a simple smoothing method usually applied to time-series. For example, for the numbers 7, 5, 2, 8, 5, 5, 9, 4, 7, 8, the running medians of length 3 are 5, 5, 5, 5, 5, 5, 7, 7. The first running median is the median of the three numbers 7, 5, and 2; the second running median is the median of 5, 2, and 8; and so on. Your function should take two arguments: the data (say, x), and the number of observations for each median (say, length). Notice that there are fewer running medians than observations. How many fewer?
+> install.packages("zoo")
+> library(zoo)
+> 
+> x <- 1:100
+> 
+> rollmedian(x,5)
+ [1]  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26
+[25] 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50
+[49] 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74
+[73] 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98
+8. Write a recursive R function to evaluate the value of y from the following equation where x is a vector of length n containing non-zero elements. The input of the function is vector of x and output function of is the value of y. 
+
+          
+
+> Question_Eight <- function(x){
++ 
++   i <- 1
++ 
++   n <- length(x)
++ 
++   answer <- x[1]
++ 
++   for(i in 1:(n-1)){
++ 
++     y <- 1 / answer
++ 
++     if(i == n-1){
++ 
++       answer <- (x[i + 1] + y)
++ 
++     }
++ 
++     else {
++ 
++       answer <- 1/(x[i] + y)
++ 
++     }
++ 
++   }
++ 
++   return(answer)
++ 
++ }
+> print(answer)
+[1] 4952
+         
+
+9. The modification of the Broca’s formula is often used to calculate ideal body weight (IBW).
+    The details are as follows:
+    For men: ideal body weight (in kilograms)=(height (in centimeter)−100) × 0.90
+    For women: ideal body weight (in kilograms)=(height(in centimeter)-105) × 0.92
+    Note: the above formulas are fit for adults.
+    Body weights within (1 ± 20%) × IBW are considered as normal. Outside this range, body weights are overweight or underweight. Write an R function, such that given the adult’s gender, height and weight, we can get the ideal body weight and the level of weight (normal, overweight, underweight).
+
+> sex <- readline()
+
+> height <- readline()
+
+> height <- as.numeric(height)
+> 
+> 
+> 
+> if (height < 2 ){
++ 
++   height = height * 100
++ 
++ }
+> 
+> if ( sex == 'female'){
++ 
++   sex <- 'f'
++ 
++ }
+> 
+> if ( sex == 'male'){
++ 
++   sex <- 'm'
++ 
++ }
+> 
+> if ( sex == 'f'){
++ 
++   weight = (height - 105) * 0.92
++ 
++   print(paste("You are a female, your ideal weight is between (",weight * 0.8, weight * 1.2,")"))
++ 
++ }
+> 
+> if ( sex == 'm'){
++ 
++   weight = (height - 100) * 0.90
++ 
++   print(paste("You are a male, your ideal weight is between (",weight * 0.8, weight * 1.2,")"))
++ 
++ }
+10. Consider a data frame df:
+Id=c(1:10)
+Age=c(14,12,15,10,23,21,41,56,78,12)
+Sex=c('F','M','M','F','M','F','M','M','F','M')
+Code=letters[1:10]
+df=data.frame(Id,Age,Sex,Code)
+Create a function that, given a data frame and two indexes, exchanges two values of the Code variable with each other.
+
+> Id=c(1:10)
+> 
+> Age=c(14,12,15,10,23,21,41,56,78,12)
+> 
+> Sex=c('F','M','M','F','M','F','M','M','F','M')
+> 
+> Code=letters[1:10]
+> 
+> df=data.frame(Id,Age,Sex,Code)
+> 
+> 
+> 
+> interchange <- function(x,y){
++ 
++   Id=c(1:10)
++ 
++   Age=c(14,12,15,10,23,21,41,56,78,12)
++ 
++   Sex=c('F','M','M','F','M','F','M','M','F','M')
++ 
++   Code=letters[1:10]
++ 
++   df=data.frame(Id,Age,Sex,Code)
++ 
++   df[5] <- df[y]
++ 
++   df[y] <- df[x]
++ 
++   df[x] <- df[5]
++ 
++   return(df[-5])
++ 
++ }
+> 
+> 
+> 
+> df
+   Id Age Sex Code
+1   1  14   F    a
+2   2  12   M    b
+3   3  15   M    c
+4   4  10   F    d
+5   5  23   M    e
+6   6  21   F    f
+7   7  41   M    g
+8   8  56   M    h
+9   9  78   F    i
+10 10  12   M    j
+11. Create a function that given a numeric vector X returns the digits 0 to 9 that are not in X. If X=0 2 4 8 the function return 1 3 5 6 7 9.
+
+> elimination <- function (x, y)
++ 
++ {
++ 
++   x <- as.vector(x)
++ 
++   y <- as.vector(y)
++ 
++   unique(if (length(x) || length(y))
++ 
++     x[match(x, y, 0L) == 0L]
++ 
++     else x)
++ 
++ }
+> x
+  [1]   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16
+ [17]  17  18  19  20  21  22  23  24  25  26  27  28  29  30  31  32
+ [33]  33  34  35  36  37  38  39  40  41  42  43  44  45  46  47  48
+ [49]  49  50  51  52  53  54  55  56  57  58  59  60  61  62  63  64
+ [65]  65  66  67  68  69  70  71  72  73  74  75  76  77  78  79  80
+ [81]  81  82  83  84  85  86  87  88  89  90  91  92  93  94  95  96
+ [97]  97  98  99 100
+>
+
+
+
+Challenge Problem:  
+
+Problem: Write an R function to calculate the reduced row-echelon form of a matrix by Gaussian elimination. Critical code should be well-commented which clearly explains what the code is accomplishing. 
+
+
+Numerical Linear Algebra: A matrix is said to be in reduced row-echelon form when it satisfies the following criteria:
+(a) All of its nonzero rows (if any) precede all of its zero rows (if any).
+(b) The first entry (from left to right) – called the leading entry – in each nonzero row is 1.
+(c) The leading entry in each nonzero row after the first is to the right of the leading entry in the previous row.
+(d) All other entries are 0 in a column containing a leading entry.
+
+A matrix can be put into reduced row echelon form by a sequence of elementary row operations, which are of three types:
+(a) Multiply each entry in a row by a nonzero constant.
+(b) Add a multiple of one row to another, replacing the other row.
+(c) Exchange two rows.
+
+Gaussian elimination is a method for transforming a matrix to reduced row-echelon form by elementary row operations. Starting at the first row and first column of the matrix, and proceeding down and to the right:
+(a) If there is a 0 in the current row and column (called the pivot), if possible exchange for a lower row to bring a nonzero element into the pivot position; if there is no nonzero pivot available, move to the right and repeat this step. If there are no nonzero elements anywhere to the right (and below), then stop.
+(b) Divide the current row by the pivot, putting a 1 in the pivot position.
+(c) Proceeding through the other rows of the matrix, multiply the pivot row by the element in the pivot column in another row, subtracting the result from the other row; these zeroes out the pivot column.
+
+Consider the following example
+
+
+ 
+
+The matrix is now in reduced row-echelon form. The rank of a matrix is the number of nonzero rows in its reduced row-echelon form, and so the matrix in this example is of rank 2.
+
+Programming hints:
+• When you do “floating-point” arithmetic on a computer, there are almost always rounding errors. One consequence is that you cannot rely on a number being exactly equal to a value such as 0. When you test that an element, say x, is 0, therefore, you should do so within a tolerance – e.g., |x| < 1 × 10−6.
+• The computations tend to be more accurate if the absolute values of the pivots are as large as possible. Consequently, you can exchange a row for a lower one to get a larger pivot even if the element in the pivot position is nonzero.
+
+> test_matrix <- matrix(c(-2,4,6,0,0,0,-1,1,1,2,0,2),ncol = 4,nrow = 3)
+> 
+> reduced_row_echelon_form <- function(A)
++ 
++ {
++ 
++   stopifnot(is.numeric(A))
++ 
++   if (!is.matrix(A))
++ 
++     stop("Input parameter 'A' must be a matrix.")
++ 
++   nr <- nrow(A)
++ 
++   nc <- ncol(A)
++ 
++   tol <- eps() * max(nr, nc) * max(abs(A))
++ 
++   r <- 1
++ 
++   for (i in 1:nc) {
++ 
++     pivot <- which.max(abs(A[r:nr, i]))
++ 
++     pivot <- r + pivot - 1
+
+. 
+
