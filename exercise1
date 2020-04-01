@@ -1,0 +1,155 @@
+
+1. Suppose you track your commute times for two weeks (10 days) and you find the following times in minutes
+17 16 20 24 22 15 21 15 17 22
+a.)	Enter this into R. Use the function max to find the longest commute time, the function mean to find the average and the function min to find the minimum.
+x=c(17, 16, 20, 24, 22, 15, 21, 15, 17, 22) #input data
+max(x)
+mean(x)
+min(x)
+ 
+
+b.)	If the 24 was a mistake. It should have been 18. How can you fix this? Do so, and then find the new average.
+x[x==24]=18
+x
+mean(x)
+ 
+
+c.)	How many times was your commute 20 minutes or more? Answer this with R.
+sum(x>=20) # if the question based on question b,the result is 4.
+ 
+
+d.) What percent of your commutes are less than 17 minutes? How can you answer this with R?
+prob=sum(x<17)/length(x) #length(x),the total number
+prob
+ 
+2. The volume of a sphere of radius r is given by  . For spheres having radius 3, 4, 5, …, 20 find the corresponding volumes and print the results out. Construct a data frame with columns radius and volume.
+radius=3:20
+volume=4/3*pi*radius^3  #change the number 3/4 to 4/3
+volume #output the volume
+
+data.frame(radius,volume)
+ 
+
+3. For the data frame ais in DAAG package，show the number of males and females for each different sport. In which sports is there a large imbalance (e.g. by a factor of more than 2:1) in the numbers of the two sexes?
+(Hint: you may need to use install.packages("DAAG") and library(DAAG))
+install.packages("DAAG")
+library(DAAG)
+head(ais) #check the input number
+str(ais)  #check the input number format
+attach(ais)
+ 
+
+#a,
+
+nums=table(sport,sex)
+nums
+ 
+
+#b,
+
+rownames(nums)[nums[,1]/nums[,2]>2|nums[,1]/nums[,2]<1/2]
+   #find the imbalance columns
+ 
+
+
+4. Create a matrix with 5 rows and 4 columns. Its elements are selected from 1:100 randomly with replacement. Calculate the mean and standard deviation of each column.   
+A<-matrix(sample(1:100,20,replace=T),nrow=5,ncol=4)
+apply(A,2,mean) #column means
+apply(A,2,sd) #column standard deviations
+ 
+5. Suppose
+ 
+ 
+a<-c(1,5,-2,1,2,-1,3,6,-3)
+A<-matrix(a,ncol=3,nrow=3)
+A%*%A%*%A
+ 
+
+#b,
+
+A[,3]=A[,2]+A[,3]
+A
+ 
+
+6. Solve the following system of linear equations in five unknowns
+ 
+by considering an appropriate matrix equation Ax = y.
+a<-c(1,2,3,4,5,2,1,2,3,4,3,2,1,2,3,4,3,2,1,2,5,4,3,2,1)
+A<-matrix(a,ncol=5)
+A
+
+y<-c(7,-1,-3,5,17)
+x<-solve(A)%*%y
+x
+ 
+7. Create a 6 × 10 matrix of random integers chosen from 1, 2,… , 10 by executing the following line of code:
+aMat <- matrix( sample(1:10, size=60, replace=T), nr=6)
+(a)	Find the number of entries in each row which are greater than 4.
+aMat = matrix( sample(1:10, size=60, replace=T), nr=6)
+aMat# show the matrix
+apply(aMat>4,1,sum)  
+(b)	Which rows contain exactly two occurrences of the number seven?
+which( apply(aMat,1,function(x){sum(x==7)==2}) )
+ 
+(c)	Find those pairs of columns whose total (over both columns) is greater than 75. The answer should be a matrix with two columns; so, for example, the row (1, 2) in the output matrix means that the sum of columns 1 and 2 in the original matrix is greater than 75. Repeating a column is not permitted. 
+acsum <- apply(aMat,2,sum)
+acc=vector()
+for (i in 1:9)
+for (j in (i+1):10)
+{ if(acsum[i]+acsum[j]>75)
+acc=c(acc,c(i,j))
+}
+acc=matrix(acc,ncol=2,byrow=T)
+acc
+ 
+8. Physical fitness testing is an important aspect of athletic training. A common measure of the magnitude of cardiovascular fitness is the maximum volume of oxygen uptake during a strenuous exercise. A study was conducted on 24 middle-aged men to study the influence of the time that it takes to complete a 2-mile run. The oxygen uptake measure was accomplished with standard laboratory methods as the subjects performed on a motor driven treadmill.
+The data are as follows:
+ 
+
+Write R codes for the following questions and show the R outputs. (Remarks: Write your own R codes based on the formula given in the class of regression analysis. Don't use the existing regression analysis function 'lm()' in R.)
+
+(a)	Input the data into R.
+a=read.csv(file.choose(),header=T) #select the file,named'assighment 1 data'
+head(a) #check the number
+dim(a) 
+str(a)  #check the type
+names(a) #in order to copy the variables` name 
+attach(a)
+ 
+
+ 
+ 
+#----------------------------------------
+#Question b and c,
+#---------------------------------------
+x=Time
+y=Maxi.Vol
+
+Sxy=sum((x-mean(x))*(y-mean(y)))
+Sxx=sum((x-mean(x))^2)
+
+beta1hat=Sxy/Sxx    #formula,yihat=beta0hat+beta1hat*x
+beta1hat
+beta0hat=mean(y)-beta1hat*mean(x)
+beta0hat  # the regression formual, yihat= -0.05102849*x+90.72172
+
+yihat= -0.05102849*x+90.72172
+yihat
+ei=y-yihat   #calculate the residual
+ei
+
+n=24
+ssqured=sum(ei^2)/(n-2)
+ssqured  #the estimator of variance
+
+#----------------------------------------
+#Question d,
+#---------------------------------------
+left=yihat-sqrt(ssqured)*2.074*sqrt(1/n+(x-mean(x))^2/Sxx)
+right=yihat+sqrt(ssqured)*2.074*sqrt(1/n+(x-mean(x))^2/Sxx)
+
+confid=cbind(left,right) #confidence intervals
+confid
+ 
+ 
+
